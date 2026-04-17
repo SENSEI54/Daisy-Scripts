@@ -49,17 +49,17 @@ fi
 
 # ---------- FRONTEND ----------
 read -p "Run deployment steps for frontend? (y/n): " RUN_FRONTEND
-read -p "Provide the folder name of frontend: " FRONTEND_FOLDER
 
 if [[ "$RUN_FRONTEND" == "y" ]]; then
+  read -p "Provide the folder name of frontend: " FRONTEND_FOLDER
   npm_install_and_build "$PROJECT_PATH/$FRONTEND_FOLDER"
 fi
 
 # ---------- BACKEND ----------
-read -p "Run deployment steps for frontend? (y/n): " RUN_FRONTEND
-if [[ "$RUN_FRONTEND" == "y" ]]; then
-  read -p "Provide the folder name of frontend: " FRONTEND_FOLDER
-  npm_install_and_build "$PROJECT_PATH/$FRONTEND_FOLDER"
+read -p "Run deployment steps for backend? (y/n): " RUN_BACKEND
+if [[ "$RUN_BACKEND" == "y" ]]; then
+  read -p "Provide the folder name of backend: " BACKEND_FOLDER
+  npm_install_and_build "$PROJECT_PATH/$BACKEND_FOLDER"
 fi
 
 # ---------- PM2 RESTART ----------
@@ -68,7 +68,7 @@ read -p "Do you want to restart a PM2 process? (y/n): " RESTART_PM2
 if [[ "$RESTART_PM2" == "y" ]]; then
   read -p "Would you like to run in root or user dir? (r/a): " DIR_TYPE
 
- if [[ "$DIR_TYPE" == "a" ]]; then
+  if [[ "$DIR_TYPE" == "a" ]]; then
     read -p "Provide the admin name: " ADMIN_NAME
 
     echo "Fetching PM2 processes for $ADMIN_NAME..."
