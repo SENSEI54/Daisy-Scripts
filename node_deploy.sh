@@ -68,13 +68,19 @@ read -p "Do you want to restart a PM2 process? (y/n): " RESTART_PM2
 if [[ "$RESTART_PM2" == "y" ]]; then
   read -p "Would you like to run in root or user dir? (r/a): " DIR_TYPE
 
-  pm2 ls
-  read -p "Enter PM2 app name or id: " PM2_NAME
-
-  if [[ "$DIR_TYPE" == "a" ]]; then
+ if [[ "$DIR_TYPE" == "a" ]]; then
     read -p "Provide the admin name: " ADMIN_NAME
-    su - "$ADMIN_NAME" -c "pm2 restart $PM2_NAME"
+
+    echo "Fetching PM2 processes for $ADMIN_NAME..."
+    su - "$ADMIN_NAME" -c "pm2 ls"
+
+    read -p "Enter PM2 app name or id: " PM2_NAME
+
+    echo "Restarting PM2 app as $ADMIN_NAME..."
+    su - "$ADMIN_NAME" -c "pm2 restart \"$PM2_NAME\""
   else
+    pm2 ls
+    read -p "Enter PM2 app name or id: " PM2_NAME
     pm2 restart "$PM2_NAME"
   fi
 fi
