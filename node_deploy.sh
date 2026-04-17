@@ -56,19 +56,27 @@ if [[ "$RUN_FRONTEND" == "y" ]]; then
 fi
 
 # ---------- BACKEND ----------
-read -p "Run deployment steps for backend? (y/n): " RUN_BACKEND
-read -p "Provide the folder name of backend: " BACKEND_FOLDER
-
-if [[ "$RUN_BACKEND" == "y" ]]; then
-  npm_install_and_build "$PROJECT_PATH/$BACKEND_FOLDER"
+read -p "Run deployment steps for frontend? (y/n): " RUN_FRONTEND
+if [[ "$RUN_FRONTEND" == "y" ]]; then
+  read -p "Provide the folder name of frontend: " FRONTEND_FOLDER
+  npm_install_and_build "$PROJECT_PATH/$FRONTEND_FOLDER"
 fi
 
 # ---------- PM2 RESTART ----------
 read -p "Do you want to restart a PM2 process? (y/n): " RESTART_PM2
 
 if [[ "$RESTART_PM2" == "y" ]]; then
+  read -p "Would you like to run in root or user dir? (r/a): " DIR_TYPE
+
+  pm2 ls
   read -p "Enter PM2 app name or id: " PM2_NAME
-  pm2 restart "$PM2_NAME"
+
+  if [[ "$DIR_TYPE" == "a" ]]; then
+    read -p "Provide the admin name: " ADMIN_NAME
+    su - "$ADMIN_NAME" -c "pm2 restart $PM2_NAME"
+  else
+    pm2 restart "$PM2_NAME"
+  fi
 fi
 
 echo "Deployment flow completed successfully"
